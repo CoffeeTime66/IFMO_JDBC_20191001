@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class RowMapperFactory {
 
     public RowMapper<Employee> employeeRowMapper() {
-        RowMapper rowMapper = new RowMapper<Employee>() {
+        RowMapper<Employee> rowMapper = new RowMapper<Employee>() {
             @Override
             public Employee mapRow(ResultSet resultSet) {
                 try {
@@ -20,7 +20,7 @@ public class RowMapperFactory {
 
                     String firstname = new String(resultSet.getString("FIRSTNAME"));
                     String lastname = new String(resultSet.getString("LASTNAME"));
-                    String middlename = new String(resultSet.getString("MIDLENAME"));
+                    String middlename = new String(resultSet.getString("MIDDLENAME"));
                     FullName fullname = new FullName(firstname, lastname, middlename);
 
                     String stringPosition = new String(resultSet.getString("POSITION"));
