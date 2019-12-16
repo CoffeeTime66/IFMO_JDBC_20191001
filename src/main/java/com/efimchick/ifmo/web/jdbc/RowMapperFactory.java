@@ -6,7 +6,7 @@ import com.efimchick.ifmo.web.jdbc.domain.Position;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.ResultSet;
-import java.sql.SQLExeception;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class RowMapperFactory {
@@ -14,19 +14,19 @@ public class RowMapperFactory {
     public RowMapper<Employee> employeeRowMapper() {
         RowMapper rowMapper = new RowMapper<Employee>() {
             @Override
-            public Emloyee mapRow(ResultSet resultSet) {
+            public Employee mapRow(ResultSet resultSet) {
                 try {
                     BigInteger id = new BigInteger(resultSet.getString("ID"));
 
                     String firstname = new String(resultSet.getString("FIRSTNAME"));
                     String lastname = new String(resultSet.getString("LASTNAME"));
                     String middlename = new String(resultSet.getString("MIDLENAME"));
-                    String fullname = new FullName(firstname, lastname, middlename);
+                    FullName fullname = new FullName(firstname, lastname, middlename);
 
                     String stringPosition = new String(resultSet.getString("POSITION"));
-                    Position position = new Position.valueOf(stringPosition);
+                    Position position = Position.valueOf(stringPosition);
 
-                    LocalDate hiredate = new LocalDate.parse(resultSet.getString("HIREDATE"));
+                    LocalDate hiredate = LocalDate.parse(resultSet.getString("HIREDATE"));
                     BigDecimal salary = new BigDecimal(resultSet.getString("SALARY"));
 
                     return new Employee(id, fullname, position, hiredate, salary);
