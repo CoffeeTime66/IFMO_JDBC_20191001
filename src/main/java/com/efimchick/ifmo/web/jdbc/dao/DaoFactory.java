@@ -75,7 +75,7 @@ public class DaoFactory {
                 try (Connection con = connectionSource.createConnection();
                      Statement statement = con.createStatement()) {
                     String query = String.format(
-                            "INSERT INTO EMPLOYEE VALUES (%d, '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%d'",
+                            "INSERT INTO EMPLOYEE VALUES (%d, '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%d')",
                             employee.getId(),
                             employee.getFullName().getFirstName(),
                             employee.getFullName().getLastName(),
@@ -84,7 +84,8 @@ public class DaoFactory {
                             employee.getManagerId(),
                             employee.getHired().toString(),
                             employee.getSalary().toBigInteger(),
-                            employee.getDepartmentId());
+                            employee.getDepartmentId()
+                    );
                     statement.executeUpdate(query);
                     return employee;
                 } catch (SQLException ex) {
