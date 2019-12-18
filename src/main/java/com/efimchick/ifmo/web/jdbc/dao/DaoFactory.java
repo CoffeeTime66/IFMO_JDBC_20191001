@@ -141,7 +141,7 @@ public class DaoFactory {
                 try (Connection con = connectionSource.createConnection();
                      Statement statement = con.createStatement()) {
                     String query = String.format("SELECT * FROM DEPARTMENT WHERE ID=%d", department.getId());
-                    ResultSet resultSet = statement.executeQuery(query1);
+                    ResultSet resultSet = statement.executeQuery(query);
                     if (resultSet.next()) {
                         query = String.format(
                                 "UPDATE DEPARTMENT SET NAME='%s', LOCATION='%s' WHERE ID=%d",
