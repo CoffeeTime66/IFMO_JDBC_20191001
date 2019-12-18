@@ -140,7 +140,7 @@ public class DaoFactory {
             public Department save(Department department) {
                 try (Connection con = connectionSource.createConnection();
                      Statement statement = con.createStatement()) {
-                    String query1 = String.format("SELECT * FROM DEPARTMENT WHERE ID=%d", department.getId());
+                    String query1 = String.format("SELECT * FROM DEPARTMENT WHERE ID=%s", department.getId());
                     ResultSet resultSet = statement.executeQuery(query1);
                     String query;
                     if (resultSet.next()) {
@@ -169,7 +169,7 @@ public class DaoFactory {
             public void delete(Department department) {
                 try (Connection con = connectionSource.createConnection();
                      Statement statement = con.createStatement()) {
-                    String query = String.format("DELETE FROM DEPARTMENT WHERE ID=%d", department.getId());
+                    String query = String.format("DELETE FROM DEPARTMENT WHERE ID=%s", department.getId());
                     statement.executeUpdate(query);
                 } catch (SQLException ex) {
                     ex.printStackTrace();
