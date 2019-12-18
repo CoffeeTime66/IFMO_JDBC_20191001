@@ -141,17 +141,17 @@ public class DaoFactory {
                 String query = null;
                 if (Optional.empty().equals(getById(department.getId()))) {
                     query = String.format(
-                            "UPDATE DEPARTMENT SET NAME='%s', LOCATION='%s' WHERE ID=%d",
-                            department.getName(),
-                            department.getLocation(),
-                            department.getId()
-                    );
-                } else {
-                    query = String.format(
                             "INSERT INTO DEPARTMENT VALUES(%d, '%s', '%s')",
                             department.getId(),
                             department.getName(),
                             department.getLocation()
+                    );
+                } else {
+                    query = String.format(
+                            "UPDATE DEPARTMENT SET NAME='%s', LOCATION='%s' WHERE ID=%d",
+                            department.getName(),
+                            department.getLocation(),
+                            department.getId()
                     );
                 }
                 try (Connection con = connectionSource.createConnection();
