@@ -170,7 +170,7 @@ public class DaoFactory {
                 try (Connection con = connectionSource.createConnection();
                      Statement statement = con.createStatement()) {
                     String query = String.format("DELETE FROM DEPARTMENT WHERE ID=%d", department.getId());
-                    statement.executeQuery(query);
+                    statement.executeUpdate(query);
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
