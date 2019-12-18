@@ -140,8 +140,9 @@ public class DaoFactory {
             public Department save(Department department) {
                 try (Connection con = connectionSource.createConnection();
                      Statement statement = con.createStatement()) {
-                    String query = String.format("SELECT * FROM DEPARTMENT WHERE ID=%d", department.getId());
-                    ResultSet resultSet = statement.executeQuery(query);
+                    String query1 = String.format("SELECT * FROM DEPARTMENT WHERE ID=%d", department.getId());
+                    ResultSet resultSet = statement.executeQuery(query1);
+                    String query;
                     if (resultSet.next()) {
                         query = String.format(
                                 "UPDATE DEPARTMENT SET NAME='%s', LOCATION='%s' WHERE ID=%d",
