@@ -139,23 +139,25 @@ public class DaoFactory {
             @Override
             public Department save(Department department) {
                 String query = null;
-                if (Optional.empty().equals(getById(department.getId()))) {
-                    query = String.format(
-                            "INSERT INTO DEPARTMENT VALUES(%d, '%s', '%s')",
-                            department.getId(),
-                            department.getName(),
-                            department.getLocation()
-                    );
-                } else {
-                    query = String.format(
-                            "UPDATE DEPARTMENT SET NAME='%s', LOCATION='%s' WHERE ID=%d",
-                            department.getName(),
-                            department.getLocation(),
-                            department.getId()
-                    );
-                }
                 try (Connection con = connectionSource.createConnection();
                      Statement statement = con.createStatement()) {
+                    query = String.format("SELECT * FROM DEPARTMENT WHERE ID=%d", department.getId());
+                    ResultSet resultSet = statement.executeQuery(query);
+                    if (!resultSet.next()) {
+                        query = String.format(
+                                "INSERT INTO DEPARTMENT VALUES(%d, '%s', '%s')",
+                                department.getId(),
+                                department.getName(),
+                                department.getLocation()
+                        );
+                    } else {
+                        query = String.format(
+                                "UPDATE DEPARTMENT SET NAME='%s', LOCATION='%s' WHERE ID=%d",
+                                department.getName(),
+                                department.getLocation(),
+                                department.getId()
+                        );
+                    }
                     statement.executeQuery(query);
                     return department;
                 } catch (SQLException ex) {
