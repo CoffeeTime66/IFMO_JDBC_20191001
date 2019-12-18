@@ -34,7 +34,7 @@ public class DaoFactory {
             public List<Employee> getByManager(Employee employee) {
                 try (Connection con = connectionSource.createConnection();
                      Statement statement = con.createStatement()) {
-                    String query = String.format("SELECT * FROM EMPLOYEE WHERE MANAGER=%s", employee.getId());
+                    String query = String.format("SELECT * FROM EMPLOYEE WHERE MANAGER=%d", employee.getId());
                     final ResultSet resultSet = statement.executeQuery(query);
                     return rsToEmployees(resultSet);
                 } catch (SQLException ex) {
@@ -46,7 +46,7 @@ public class DaoFactory {
             public Optional<Employee> getById(BigInteger id) {
                 try (Connection con = connectionSource.createConnection();
                      Statement statement = con.createStatement()) {
-                    String query = String.format("SELECT * FROM EMPLOYEE WHERE MANAGER=%s", id);
+                    String query = String.format("SELECT * FROM EMPLOYEE WHERE ID=%d", id);
                     final ResultSet resultSet = statement.executeQuery(query);
                     if (resultSet.next()) {
                         return Optional.of(rsToEmployee(resultSet));
@@ -148,7 +148,7 @@ public class DaoFactory {
                     );
                 } else {
                     query = String.format(
-                            "INSERT INTO DEPARTMENT VALUES(%d, '%s', '%s)",
+                            "INSERT INTO DEPARTMENT VALUES(%d, '%s', '%s')",
                             department.getId(),
                             department.getName(),
                             department.getLocation()
