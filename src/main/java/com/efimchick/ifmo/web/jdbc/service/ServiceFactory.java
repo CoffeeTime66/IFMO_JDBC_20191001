@@ -96,9 +96,13 @@ public class ServiceFactory {
         if (rs == null) {
             return null;
         }
-        while(rs.next()) {
-            Employee employee = rsToEmployee(rs, managerRequired, chainRequired);
-            res.add(employee);
+        try {
+            while (rs.next()) {
+                Employee employee = rsToEmployee(rs, managerRequired, chainRequired);
+                res.add(employee);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
         return res;
     }
