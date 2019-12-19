@@ -18,8 +18,7 @@ public class ServiceFactory {
         try {
             ConnectionSource connectionSource = ConnectionSource.instance();
             Connection connection = connectionSource.createConnection();
-            return connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE).
-                    executeQuery(query);
+            return connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery(query);
         } catch (SQLException ex) {
             return null;
         }
@@ -50,7 +49,7 @@ public class ServiceFactory {
 
     private Employee rsToEmployee(ResultSet rs, boolean managerRequired, boolean chainRequired) {
         try {
-            BigInteger id = new BigInteger(String.valueOf(rs.getString("ID")));
+            BigInteger id = new BigInteger(rs.getString("ID"));
 
             FullName fullName = new FullName(
                     rs.getString("FIRSTNAME"),
@@ -59,10 +58,10 @@ public class ServiceFactory {
             );
 
             Position position = Position.valueOf(rs.getString("POSITION"));
-            BigInteger managerId = new BigInteger(rs.getString("MANAGER"));
+            BigInteger managerId = BigInteger.valueOf(rs.getInt("MANAGER"));
             LocalDate hireDate = LocalDate.parse(rs.getString("HIREDATE"));
-            BigDecimal salary = new BigDecimal(rs.getString("SALARY"));
-            BigInteger departmentId = new BigInteger(rs.getString("DEPARTMENT"));
+            BigDecimal salary = new BigDecimal(String.valueOf(rs.getInt("SALARY")));
+            BigInteger departmentId = BigInteger.valueOf(rs.getInt("DEPARTMENT"));
 
             Employee manager = null;
             List<Department> departments = getDepartments();
@@ -93,18 +92,18 @@ public class ServiceFactory {
 
     private List<Employee> employeesToList(ResultSet rs, boolean managerRequired, boolean chainRequired) {
         List<Employee> res = new ArrayList<Employee>();
-        if (rs == null) {
+        if (rs != null) {
+            try {
+                while (rs.next()) {
+                    res.add(rsToEmployee(rs, managerRequired, chainRequired));
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return res;
+        } else {
             return null;
         }
-        try {
-            while (rs.next()) {
-                Employee employee = rsToEmployee(rs, managerRequired, chainRequired);
-                res.add(employee);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return res;
     }
 
     private List<Employee> cutEmployee(List<Employee> employees, Paging paging) {
@@ -119,7 +118,7 @@ public class ServiceFactory {
             public List<Employee> getAllSortByHireDate(Paging paging) {
                 String query = "SELECT * FROM EMPLOYEE ORDER BY HIREDATE";
                 ResultSet rs = getResultSet(query);
-                return cutEmployee(Objects.requireNonNull(employeesToList(rs, true, false)), paging)    ;
+                return cutEmployee(Objects.requireNonNull(employeesToList(rs, true, false)), paging);
             }
 
             @Override
@@ -152,7 +151,7 @@ public class ServiceFactory {
 
             @Override
             public List<Employee> getByDepartmentSortBySalary(Department department, Paging paging) {
-                String query = String.format("SELECT * FROM EMPLOYEE WHERE DEPARTMENT=%s ORDER BY SALARY", department.getId());
+                String query = String.format("SELECT * FROM EMPLOYEE WHERE DEPARTMENT=%d ORDER BY SALARY", department.getId());
                 ResultSet rs = getResultSet(query);
                 return cutEmployee(Objects.requireNonNull(employeesToList(rs, true, false)), paging);
             }
@@ -187,14 +186,14 @@ public class ServiceFactory {
 
             @Override
             public Employee getWithDepartmentAndFullManagerChain(Employee employee) {
-                String query = String.format("SELECT * FROM EMPLOYEE WHERE MANAGER=%s", employee.getId());
+                String query = String.format("SELECT * FROM EMPLOYEE WHERE ID=%s", employee.getId());
                 ResultSet rs = getResultSet(query);
                 return Objects.requireNonNull(employeesToList(rs, true, true)).get(0);
             }
 
             @Override
             public Employee getTopNthBySalaryByDepartment(int salaryRank, Department department) {
-                String query = String.format("SELECT * FROM EMPLOYEE WHEERE DEPARTMENT=%s, ORDER BY SALARY DESC LIMIT 1 OFFSET $d",
+                String query = String.format("SELECT * FROM EMPLOYEE WHERE DEPARTMENT=%s ORDER BY SALARY DESC LIMIT 1 OFFSET %d",
                         department.getId(),
                         salaryRank - 1
                 );
