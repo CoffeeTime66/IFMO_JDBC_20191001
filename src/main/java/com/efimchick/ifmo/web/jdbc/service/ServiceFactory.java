@@ -30,19 +30,22 @@ public class ServiceFactory {
         ResultSet rs = getResultSet(query);
 
         List<Department> res = new ArrayList<Department>();
-
-        while(rs.next()) {
-            try {
-                res.add(new Department(
-                        new BigInteger(rs.getString("ID")),
-                        rs.getString("NAME"),
-                        rs.getString("LOCATION")
-                ));
-            } catch(SQLException ex) {
-                res.add(null);
+        try {
+            while (rs.next()) {
+                try {
+                    res.add(new Department(
+                            new BigInteger(rs.getString("ID")),
+                            rs.getString("NAME"),
+                            rs.getString("LOCATION")
+                    ));
+                } catch (SQLException ex) {
+                    res.add(null);
+                }
             }
+            return res;
+        } catch (SQLException ex) {
+            return null;
         }
-        return res;
     }
 
     private Employee rsToEmployee(ResultSet rs, boolean managerRequired, boolean chainRequired) {
